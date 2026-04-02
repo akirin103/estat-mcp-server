@@ -3,7 +3,7 @@ E-Stat MCP Server
 """
 import os
 import httpx
-from typing import Optional, Dict, Any
+from typing import Optional
 from mcp.server.fastmcp import FastMCP
 
 mcp_server = FastMCP("EStatServer")
@@ -45,7 +45,7 @@ async def make_e_stat_request(url: str, timeout: int = 30) -> str:
 @mcp_server.tool()
 async def search_e_stat_tables(
         search_word: str,
-        surveyYears	: str,
+        surveyYears: str,
         startPosition: int = 1,
         limit: int = 100
     ) -> str:
@@ -87,7 +87,6 @@ async def search_e_stat_tables(
         f"&surveyYears={surveyYears}&startPosition={startPosition}"
     )
     return await make_e_stat_request(url)
-
 
 
 @mcp_server.tool()

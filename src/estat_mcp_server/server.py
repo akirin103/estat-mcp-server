@@ -159,7 +159,7 @@ async def get_specific_e_stat_data(
 
 @mcp_server.tool()
 async def get_e_stat_ref_dataset(
-        data_set_id: str,
+        data_set_id: Optional[str] = None,
     ) -> str:
     """
     Retrieves the reference dataset from the E-Stat API.
@@ -173,9 +173,9 @@ async def get_e_stat_ref_dataset(
     Returns:
         str: The response text from the E-Stat API.
     """
-    url = (
-        f"{E_STAT_API_BASE_URL}refDataset?appId={E_STAT_APP_ID}"
-    )
+    url = f"{E_STAT_API_BASE_URL}refDataset?appId={E_STAT_APP_ID}"
+    if data_set_id:
+        url += f"&dataSetId={data_set_id}"
     return await make_e_stat_request(url)
 
 

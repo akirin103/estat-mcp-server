@@ -117,28 +117,36 @@ async def get_specific_e_stat_data(
         data_set_id: Optional[str] = None,
         stats_data_id: Optional[str] = None,
         startPosition: int = 1,
-        limit: int = 100
+        limit: int = 100,
+        cdArea: Optional[str] = None,
+        cdCat01: Optional[str] = None,
+        cdCat02: Optional[str] = None,
+        cdCat03: Optional[str] = None,
+        cdTab: Optional[str] = None,
+        cdTime: Optional[str] = None,
     ) -> str:
     """
     Retrieves specific statistics data from the E-Stat API.
     機能名:統計データ取得
     指定した統計表ID又はデータセットIDに対応する統計データ（数値データ）を取得します。
 
-    Args:
-        data_set_id (str or None): The ID of the dataset(データセットID).
-        stats_data_id (str or None): The ID of the statistics data(統計表ID).
-        # Ensure that either data_set_id or stats_data_id is provided, but not both
-        if not data_set_id and not stats_data_id:
-            raise ValueError("Either 'data_set_id' or 'stats_data_id' must be provided.")
-        if data_set_id and stats_data_id:
-            raise ValueError("Only one of 'data_set_id' or 'stats_data_id' should be provided.")
+    フィルタパラメータにはgetMetaInfo（メタ情報取得）で得られるコード値を指定してください。
+    複数コードを指定する場合はカンマ区切り（例: cdArea="01000,02000"）で指定できます。
 
-        startPosition (int): The starting position for the search results.
-            Defaults to 1. For example:
-                - To get the first 100 results, set startPosition to 1.
-                - To get the next 100 results, set startPosition to 101.
-        limit (int): The maximum number of results to retrieve.
-            Defaults to 100.
+    Note: E-Stat APIはcdCat01〜cdCat15まで対応していますが、
+    実用上頻出するcdCat01〜cdCat03のみサポートしています。
+
+    Args:
+        data_set_id (str or None): データセットID。stats_data_idと排他。
+        stats_data_id (str or None): 統計表ID。data_set_idと排他。
+        startPosition (int): 取得開始位置。デフォルト1。
+        limit (int): 最大取得件数。デフォルト100。
+        cdArea (str or None): 地域コード。例: "29000"（奈良県）, "01000,02000"（北海道,青森県）
+        cdCat01 (str or None): 分類事項01のコード。例: "0"（総数）
+        cdCat02 (str or None): 分類事項02のコード。
+        cdCat03 (str or None): 分類事項03のコード。
+        cdTab (str or None): 表章事項コード。
+        cdTime (str or None): 時間軸コード。例: "2020000000"（2020年）
 
     Returns:
         str: The response text from the E-Stat API.
@@ -152,7 +160,22 @@ async def get_specific_e_stat_data(
     elif stats_data_id and not data_set_id:
         url += f"&statsDataId={stats_data_id}"
     else:
-        raise ValueError("Either 'data_set_id' or 'stats_data_id' must be provided, but not both.")
+        raise ValueError(
+            "Either 'data_set_id' or 'stats_data_id' must be provided, but not both."
+        )
+
+    if cdArea:
+        url += f"&cdArea={cdArea}"
+    if cdCat01:
+        url += f"&cdCat01={cdCat01}"
+    if cdCat02:
+        url += f"&cdCat02={cdCat02}"
+    if cdCat03:
+        url += f"&cdCat03={cdCat03}"
+    if cdTab:
+        url += f"&cdTab={cdTab}"
+    if cdTime:
+        url += f"&cdTime={cdTime}"
 
     return await make_e_stat_request(url)
 

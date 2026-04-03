@@ -47,7 +47,8 @@ async def search_e_stat_tables(
         search_word: str,
         surveyYears: str,
         startPosition: int = 1,
-        limit: int = 100
+        limit: int = 100,
+        collectArea: Optional[str] = None,
     ) -> str:
     """
     Retrieves a list of statistics tables from the E-Stat API.
@@ -72,11 +73,9 @@ async def search_e_stat_tables(
                 - To get the first 100 results, set startPosition to 1.
                 - To get the next 100 results, set startPosition to 101.
         limit (int, optional): Maximum number of results to retrieve. Defaults to 100.
-    Example:
-        search_word = "東京 AND 人口"
-        surveyYears = "2023"
-        startPosition = 1
-        limit = 100
+        collectArea (str or None): 集計地域区分。
+            "1" = 全国, "2" = 都道府県, "3" = 市区町村。
+            None = 指定なし。
 
     Returns:
         str: The response text from the E-Stat API.
@@ -86,6 +85,8 @@ async def search_e_stat_tables(
         f"&searchWord={search_word}&limit={limit}"
         f"&surveyYears={surveyYears}&startPosition={startPosition}"
     )
+    if collectArea:
+        url += f"&collectArea={collectArea}"
     return await make_e_stat_request(url)
 
 

@@ -1,6 +1,7 @@
 """
 E-Stat MCP Server
 """
+import sys
 import os
 import httpx
 from typing import Optional

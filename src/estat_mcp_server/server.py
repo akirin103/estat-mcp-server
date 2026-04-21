@@ -251,7 +251,7 @@ async def get_e_stat_data_catalog(
     return await make_e_stat_request(url)
 
 def main() -> None:
-    print("Starting Oura MCP server!")
+    print("Starting E-Stat MCP server!", file=sys.stderr)
     mcp_server.run(transport="stdio")
 
 if __name__ == "__main__":
